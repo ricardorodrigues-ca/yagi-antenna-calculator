@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Antenna Design Results</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <!-- Optional JavaScript for Print Functionality -->
+    <script>
+        function printResults() {
+            window.print();
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container">
+    <h1 class="mt-5">Antenna Design Results</h1>
+    <p>Date: {{ date }}</p>
+    <p>Callsign: {{ callsign }}</p>
+    <table class="table table-bordered mt-4">
+        <tr>
+            <th>Frequency (MHz)</th>
+            <td>{{ results.frequency }}</td>
+        </tr>
+        <tr>
+            <th>Gain (dBd)</th>
+            <td>{{ results.gain }}</td>
+        </tr>
+        <tr>
+            <th>Boom Length ({{ results.boom_length_unit }})</th>
+            <td>{{ results.boom_length }}</td>
+        </tr>
+        <tr>
+            <th>Number of Elements</th>
+            <td>{{ results.number_of_elements }}</td>
+        </tr>
+    </table>
+    <h3 class="mt-5">Element Details</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Position ({{ results.boom_length_unit }})</th>
+                <th>Type</th>
+                <th>Length ({{ results.boom_length_unit }})</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for element in results.elements %}
+            <tr>
+                <td>{{ element.position }}</td>
+                <td>{{ element.type }}</td>
+                <td>{{ element.length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Buttons -->
+    <div class="mt-4 no-print">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Start Over</a>
+        <button onclick="printResults()" class="btn btn-secondary">Print Results</button>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DL6WU Yagi Antenna Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+<div class="container">
+    <h1 class="mt-5">DL6WU Yagi Antenna Calculator</h1>
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+    <form method="post" class="mt-4">
+        <div class="form-group">
+            <label for="callsign">Your Callsign:</label>
+            <input type="text" class="form-control" id="callsign" name="callsign">
+        </div>
+        <div class="form-group">
+            <label for="frequency">Design Frequency (MHz):</label>
+            <input type="number" step="any" class="form-control" id="frequency" name="frequency" required>
+        </div>
+        <div class="form-group">
+            <label>Units of Measurement:</label>
+            <select class="form-control" name="units" id="units" required>
+                <option value="1">Inches</option>
+                <option value="2">Millimeters</option>
+                <option value="3">Wavelengths</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Specify:</label>
+            <select class="form-control" name="specify" id="specify" required>
+                <option value="gain">Forward Gain</option>
+                <option value="boom_length">Boom Length</option>
+            </select>
+        </div>
+        <div class="form-group" id="gain-group">
+            <label for="gain">Required Gain (dBd):</label>
+            <input type="number" step="any" class="form-control" id="gain" name="gain">
+        </div>
+        <div class="form-group d-none" id="boom-length-group">
+            <label for="boom_length" id="boom_length_label">Boom Length:</label>
+            <input type="number" step="any" class="form-control" id="boom_length" name="boom_length">
+        </div>
+        <div class="form-group">
+            <label>Element Mounting Method:</label>
+            <select class="form-control" name="element_mounting" id="element_mounting" required>
+                <option value="1">Metal boom; elements pass through and are BONDED, not insulated</option>
+                <option value="2">Metal boom; elements pass through but are INSULATED</option>
+                <option value="3">Non-metallic boom or elements mounted on insulators</option>
+            </select>
+        </div>
+        <div class="form-group" id="boom-diameter-group">
+            <!-- Added id to the label -->
+            <label for="boom_diameter" id="boom_diameter_label">Boom Diameter:</label>
+            <input type="number" step="any" class="form-control" id="boom_diameter" name="boom_diameter">
+        </div>
+        <div class="form-group">
+            <!-- Added id to the label -->
+            <label for="driven_element_diameter" id="driven_element_diameter_label">Driven Element Diameter:</label>
+            <input type="number" step="any" class="form-control" id="driven_element_diameter" name="driven_element_diameter" required>
+        </div>
+        <div class="form-group">
+            <!-- Added id to the label -->
+            <label for="parasitic_element_diameter" id="parasitic_element_diameter_label">Parasitic Element Diameter:</label>
+            <input type="number" step="any" class="form-control" id="parasitic_element_diameter" name="parasitic_element_diameter" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+</div>
+<!-- JavaScript for Dynamic Label Updates -->
+<script>
+    function updateUnitLabels() {
+        var unitsSelect = document.getElementById('units');
+        var unitText = '';
+        if (unitsSelect.value === '1') {
+            unitText = '(inches)';
+        } else if (unitsSelect.value === '2') {
+            unitText = '(mm)';
+        } else if (unitsSelect.value === '3') {
+            unitText = '(wavelengths)';
+        }
+        // Update the labels
+        document.getElementById('boom_diameter_label').innerText = 'Boom Diameter ' + unitText + ':';
+        document.getElementById('driven_element_diameter_label').innerText = 'Driven Element Diameter ' + unitText + ':';
+        document.getElementById('parasitic_element_diameter_label').innerText = 'Parasitic Element Diameter ' + unitText + ':';
+        document.getElementById('boom_length_label').innerText = 'Boom Length ' + unitText + ':';
+    }
+
+    function toggleGainBoomFields() {
+        var specifySelect = document.getElementById('specify');
+        var gainGroup = document.getElementById('gain-group');
+        var boomLengthGroup = document.getElementById('boom-length-group');
+        if (specifySelect.value === 'gain') {
+            gainGroup.classList.remove('d-none');
+            boomLengthGroup.classList.add('d-none');
+        } else {
+            gainGroup.classList.add('d-none');
+            boomLengthGroup.classList.remove('d-none');
+        }
+    }
+
+    function toggleBoomDiameterField() {
+        var elementMountingSelect = document.getElementById('element_mounting');
+        var boomDiameterGroup = document.getElementById('boom-diameter-group');
+        if (elementMountingSelect.value === '3') {
+            boomDiameterGroup.classList.add('d-none');
+        } else {
+            boomDiameterGroup.classList.remove('d-none');
+        }
+    }
+
+    // Initial call to set the labels and field visibility on page load
+    updateUnitLabels();
+    toggleGainBoomFields();
+    toggleBoomDiameterField();
+
+    // Event listeners
+    document.getElementById('units').addEventListener('change', updateUnitLabels);
+    document.getElementById('specify').addEventListener('change', toggleGainBoomFields);
+    document.getElementById('element_mounting').addEventListener('change', toggleBoomDiameterField);
+</script>
+</body>
+</html>
